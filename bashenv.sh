@@ -13,7 +13,7 @@ elif [[ $_uname = "Linux" ]]; then
 fi
 
 function _cpu_utilization {
-    local cpu_util=$(ps -eo "%C" | awk '{s+=$0} END { printf "%d", s }')
+    local cpu_util=$(ps -eo "%cpu" | awk '{s+=$0} END { printf "%d", s }')
     
     local color=""
     if (( $cpu_util > 75 )); then
@@ -41,7 +41,7 @@ function _mem_utilization {
     fi
 
     local color=""
-    if [[ $mem_util!="?" ]]; then
+    if [[ $mem_util != "?" ]]; then
 	if (( $mem_util > 75 )); then
 	    color=$GRN
 	elif (( $mem_util > 50 )); then
