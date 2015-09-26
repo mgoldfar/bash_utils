@@ -31,12 +31,16 @@ function _cpu_utilization {
 
 function _mem_utilization {
     local mem_util="?"
-    if (( _is_maxosx == 1 )); then
-       echo ""
+    if (( _is_macosx == 1 )); then
+        local total_hw_mem_bytes=$(sysctl hw.memsize | cut -d' ' -f2)
+        local page_size=$(sysctl vm.pagesize | cut -d' ' -f2)
+        local total_hw_pages=$((total_hw_mem_bytes / page_size))
+        local num_page_free=$(sysctl vm.page_free_count | cut -d' ' -f2)
+        mem_util=$(( num_page_free*100/total_hw_pages))
+
     elif (( _is_linux == 1 )); then
 	local awksrc='/total\smemory/ {tot=$1} /free\smemory/{free=$1} '
 	awksrc=$awksrc'END {p=free/tot; printf "%d", 100*p; }'
-
 	mem_util=$(vmstat -s | awk "$awksrc" )
     fi
 
@@ -62,5 +66,3 @@ function _prompt {
     export PS1="$BOLD\\t|$BLU\\u$NORM C:$cpu_util M:$mem_util \\w\\n\\$ "
 }
 export PROMPT_COMMAND=_prompt
-
-
