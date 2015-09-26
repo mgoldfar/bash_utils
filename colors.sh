@@ -1,9 +1,9 @@
 # Code referenced from http://misc.flogisoft.com/bash/tip_colors_and_formatting
 
 # Styles
-NRM="\e[0m"
-BLD="\e[1m"
-UND="\e[4m"
+NORM="\e[0m"
+BOLD="\e[1m"
+UNDR="\e[4m"
 
 # Foreground Colors
 DEF="\e[39m"
