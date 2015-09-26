@@ -36,7 +36,9 @@ function _mem_utilization {
         local page_size=$(sysctl vm.pagesize | cut -d' ' -f2)
         local total_hw_pages=$((total_hw_mem_bytes / page_size))
         local num_page_free=$(sysctl vm.page_free_count | cut -d' ' -f2)
-        mem_util=$(( num_page_free*100/total_hw_pages))
+        local num_page_purgable=$(sysctl vm.page_purgeable_count | cut -d' ' -f2)
+        local num_page_reusable=$(sysctl vm.page_reusable_count | cut -d' ' -f2)
+        mem_util=$(( (num_page_free+num_page_purgable+num_page_reusable)*100/total_hw_pages))
 
     elif (( _is_linux == 1 )); then
 	local awksrc='/total\smemory/ {tot=$1} /free\smemory/{free=$1} '
@@ -63,6 +65,6 @@ function _mem_utilization {
 function _prompt {
     local cpu_util=$(_cpu_utilization)
     local mem_util=$(_mem_utilization)
-    export PS1="$BOLD\\t|$BLU\\u$NORM C:$cpu_util M:$mem_util \\w\\n\\$ "
+    export PS1="[\\t] $BLU\\u@\h$NORM C:$cpu_util M:$mem_util \\w\\n\\$ "
 }
 export PROMPT_COMMAND=_prompt
