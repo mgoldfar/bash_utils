@@ -13,7 +13,14 @@ elif [[ $_uname = "Linux" ]]; then
 fi
 
 function _cpu_utilization {
-    local cpu_util=$(ps -eo "%cpu" | awk '{s+=$0} END { printf "%d", s }')
+    local ncpu=1
+    if (( _is_macosx == 1 )); then
+        ncpu=$(sysctl hw.ncpu | cut -d' ' -f2)
+    elif (( _is_linux == 1 )); then
+        ncpu=$(nproc)
+    fi
+
+    local cpu_util=$(ps -eo "%cpu" | awk "{s+=\$0} END { printf \"%d\", s/$ncpu }")
     
     local color=""
     if (( $cpu_util > 75 )); then
