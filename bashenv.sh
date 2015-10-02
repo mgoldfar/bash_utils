@@ -143,7 +143,7 @@ function _prompt {
 
 	 local ps1="\\[[\\t $cpu_util $mem_util] $BLU\\u@\h$NORM \\w "
 	 if [[ -n "${git_status}" ]]; then
-	     if (( ${#git_status} > $COLUMNS )); then
+	     if (( ${#ps1} + ${#git_status} > $COLUMNS )); then
 		 ps1="${ps1}\\n${git_status}"
 	     else
 		 ps1="${ps1}${git_status}"
