@@ -48,7 +48,8 @@ function _mem_utilization {
         mem_util=$(( (num_page_free+num_page_purgable+num_page_reusable)*100/total_hw_pages))
 
     elif (( _is_linux == 1 )); then
-	local awksrc='/total\smemory/ {tot=$1} /free\smemory/{free=$1} '
+	local awksrc='/total[[:space:]]memory/{tot=$1} '
+	awksrc=$awksrc'/free[[:space:]]memory/{free=$1} '
 	awksrc=$awksrc'END {p=free/tot; printf "%d", 100*p; }'
 	mem_util=$(vmstat -s | awk "$awksrc" )
     fi
