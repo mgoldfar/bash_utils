@@ -69,9 +69,83 @@ function _mem_utilization {
     echo -e "${color}${mem_util}%${NORM}"
 }
 
+function _git_status {
+    # Display nothing if we are not in a working tree
+    if git rev-parse --is-inside-work-tree &> /dev/null; then
+        local branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null)
+		  local staged_added=0
+		  local staged_modified=0
+		  local staged_deleted=0
+		  local unstaged_added=0
+		  local unstaged_modified=0
+		  local unstaged=deleted=0
+		  local untracked=0
+		  local unmerged=0
+		  while IFS= read line; do
+			  local c1=${line:0:1}
+			  local c2=${line:1:1}
+
+			  case "$c1$c2" in
+				  "DD"|"AU"|"UD"|"UA"|"DU"|"AA"|"UU") (( unmerged++ )) ;;
+				  "??") (( untracked++ )) ;;
+			  esac
+
+			  case "$c2" in
+				  "M") (( unstaged_modified++ )) ;;
+				  "A") (( unstaged_added++ )) ;;
+				  "D") (( unstaged_deleted++ )) ;;
+			  esac
+
+			  case "$c1" in
+				  "M") (( staged_modified++ )) ;;
+				  "A") (( staged_added++ )) ;;
+				  "D") (( staged_deleted++ )) ;;
+			  esac
+		  done < <(git status --porcelain 2>/dev/null)
+
+		  local status=""
+		  if (( untracked > 0 )); then
+			  status="${status}${YLW}?${DEF}${NORM}"
+		  fi
+
+		  if (( unstaged_modified > 0 && staged_modified > 0 )); then
+			  status="${status}${RED}M${DEF}${NORM}"
+		  elif (( unstaged_modified > 0 )); then
+			  status="${status}${RED}m${DEF}${NORM}"
+		  elif (( staged_modified > 0 )); then
+			  status="${status}${GRN}M${DEF}${NORM}"
+		  fi
+
+		  if (( unmerged > 0 )); then
+			  status="${BOLD}<<< ${status} >>${DEF}>${NORM}"
+		  elif [[ -n "$status" ]]; then
+			  status="-${status}-"
+		  fi
+
+		  local brcolor="${BGDEF}${DEF}"
+		  if (( unstaged_modified + unstaged_added + unstaged_deleted > 0 )); then
+			  brcolor="${BGRED}${BOLD}${WTE}"
+		  elif (( untracked > 0 )); then
+			  brcolor="${BGYLW}${BOLD}${WTE}"
+		  else
+			  brcolor="${BGGRN}${WTE}"
+		  fi
+
+		  echo -e -n "${brcolor}${branch}${BGDEF}${DEF}${NORM} ${status}"
+    fi
+}
+
 function _prompt {
     local cpu_util=$(_cpu_utilization)
     local mem_util=$(_mem_utilization)
-    export PS1="[\\t] $BLU\\u@\h$NORM C:$cpu_util M:$mem_util \\w\\n\\$ "
+	 local git_status=$(_git_status)
+
+	 local ps1="[\\t $cpu_util $mem_util] $BLU\\u@\h$NORM \\w "
+	 if [[ -n "${git_status}" ]]; then
+		 ps1="${ps1}${git_status}\\n"
+	 fi
+	 ps1="${ps1}\\$ "
+
+    export PS1="${ps1}"
 }
 export PROMPT_COMMAND=_prompt
