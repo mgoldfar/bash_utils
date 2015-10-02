@@ -140,7 +140,7 @@ function _prompt {
     local mem_util=$(_mem_utilization)
 	 local git_status=$(_git_status)
 
-	 local ps1="[\\t $cpu_util $mem_util] $BLU\\u@\h$NORM \\w "
+	 local ps1="\\[[\\t $cpu_util $mem_util] $BLU\\u@\h$NORM \\w "
 	 if [[ -n "${git_status}" ]]; then
 		 ps1="${ps1}${git_status}\\n"
 	 fi
