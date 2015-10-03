@@ -55,16 +55,17 @@ function _mem_utilization {
     fi
 
     local color=""
+    (( mem_util = 100 - $mem_util ))
     if [[ $mem_util != "?" ]]; then
-	if (( $mem_util > 75 )); then
-	    color=$GRN
-	elif (( $mem_util > 50 )); then
-	    color=$YLW
-	elif (( $mem_util > 25 )); then
-	    color=$LRED
-	else
-	    color=$BOLD$RED
-	fi
+        if (( $mem_util > 90 )); then
+            color=$BOLD$RED
+        elif (( $mem_util > 75 )); then
+            color=$LRED
+        elif (( $mem_util > 50 )); then
+            color=$YLW
+        else
+            color=$GRN
+        fi
     fi
     
     echo -e "${color}${mem_util}%${NORM}"
