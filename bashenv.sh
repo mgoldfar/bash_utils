@@ -48,7 +48,8 @@ function _mem_utilization {
         mem_util=$(( (num_page_free+num_page_purgable+num_page_reusable)*100/total_hw_pages))
 
     elif (( _is_linux == 1 )); then
-	local awksrc='/total\smemory/ {tot=$1} /free\smemory/{free=$1} '
+	local awksrc='/total[[:space:]]memory/{tot=$1} '
+	awksrc=$awksrc'/free[[:space:]]memory/{free=$1} '
 	awksrc=$awksrc'END {p=free/tot; printf "%d", 100*p; }'
 	mem_util=$(vmstat -s | awk "$awksrc" )
     fi
@@ -80,78 +81,82 @@ function _git_status {
             branch="${branch:0:$len}..."
         fi
 
-		  local staged_added=0
-		  local staged_modified=0
-		  local staged_deleted=0
-		  local unstaged_added=0
-		  local unstaged_modified=0
-		  local unstaged=deleted=0
-		  local untracked=0
-		  local unmerged=0
-		  while IFS= read line; do
-			  local c1=${line:0:1}
-			  local c2=${line:1:1}
-
-			  case "$c1$c2" in
-				  "DD"|"AU"|"UD"|"UA"|"DU"|"AA"|"UU") (( unmerged++ )) ;;
-				  "??") (( untracked++ )) ;;
-			  esac
-
-			  case "$c2" in
-				  "M") (( unstaged_modified++ )) ;;
-				  "A") (( unstaged_added++ )) ;;
-				  "D") (( unstaged_deleted++ )) ;;
-			  esac
-
-			  case "$c1" in
-				  "M") (( staged_modified++ )) ;;
-				  "A") (( staged_added++ )) ;;
-				  "D") (( staged_deleted++ )) ;;
-			  esac
-		  done < <(git status --porcelain 2>/dev/null)
-
-		  local status=""
-		  if (( untracked > 0 )); then
-			  status="${status}${YLW}?${DEF}${NORM}"
-		  fi
-
-		  if (( unstaged_modified > 0 && staged_modified > 0 )); then
-			  status="${status}${RED}M${DEF}${NORM}"
-		  elif (( unstaged_modified > 0 )); then
-			  status="${status}${RED}m${DEF}${NORM}"
-		  elif (( staged_modified > 0 )); then
-			  status="${status}${GRN}M${DEF}${NORM}"
-		  fi
-
-		  if (( unmerged > 0 )); then
-			  status="${BOLD}<<< ${status} >>${DEF}>${NORM}"
-		  elif [[ -n "$status" ]]; then
-			  status="-${status}-"
-		  fi
-
-		  local brcolor="${BGDEF}${DEF}"
-		  if (( unstaged_modified + unstaged_added + unstaged_deleted > 0 )); then
-			  brcolor="${BGRED}${BOLD}${WTE}"
-		  elif (( untracked > 0 )); then
-			  brcolor="${BGYLW}${BOLD}${WTE}"
-		  else
-			  brcolor="${BGGRN}${WTE}"
-		  fi
-
-		  echo -e -n "${brcolor}${branch}${BGDEF}${DEF}${NORM} ${status}"
+	local staged_added=0
+	local staged_modified=0
+	local staged_deleted=0
+	local unstaged_added=0
+	local unstaged_modified=0
+	local unstaged=deleted=0
+	local untracked=0
+	local unmerged=0
+	while IFS= read line; do
+	    local c1=${line:0:1}
+	    local c2=${line:1:1}
+            
+	    case "$c1$c2" in
+		"DD"|"AU"|"UD"|"UA"|"DU"|"AA"|"UU") (( unmerged++ )) ;;
+		"??") (( untracked++ )) ;;
+	    esac
+            
+	    case "$c2" in
+		"M") (( unstaged_modified++ )) ;;
+		"A") (( unstaged_added++ )) ;;
+		"D") (( unstaged_deleted++ )) ;;
+	    esac
+            
+	    case "$c1" in
+		"M") (( staged_modified++ )) ;;
+		"A") (( staged_added++ )) ;;
+		"D") (( staged_deleted++ )) ;;
+	    esac
+	done < <(git status --porcelain 2>/dev/null)
+        
+	local status=""
+	if (( untracked > 0 )); then
+	    status="${status}${YLW}?${DEF}${NORM}"
+	fi
+        
+	if (( unstaged_modified > 0 && staged_modified > 0 )); then
+	    status="${status}${RED}M${DEF}${NORM}"
+	elif (( unstaged_modified > 0 )); then
+	    status="${status}${RED}m${DEF}${NORM}"
+	elif (( staged_modified > 0 )); then
+	    status="${status}${GRN}M${DEF}${NORM}"
+	fi
+        
+	if (( unmerged > 0 )); then
+	    status="${BOLD}<<< ${status}${BOLD} >>${DEF}>${NORM}"
+	elif [[ -n "$status" ]]; then
+	    status="-${status}-"
+	fi
+        
+	local brcolor="${BGDEF}${DEF}"
+	if (( unstaged_modified + unstaged_added + unstaged_deleted > 0 )); then
+	    brcolor="${BGRED}${BOLD}${WTE}"
+	elif (( untracked > 0 )); then
+	    brcolor="${BGYLW}${BOLD}${WTE}"
+	else
+	    brcolor="${BGGRN}${WTE}"
+	fi
+        
+	echo -e -n "${brcolor}${branch}${BGDEF}${DEF}${NORM} ${status}"
     fi
 }
 
 function _prompt {
     local cpu_util=$(_cpu_utilization)
     local mem_util=$(_mem_utilization)
-	 local git_status=$(_git_status)
+    local git_status=$(_git_status)
 
-	 local ps1="[\\t $cpu_util $mem_util] $BLU\\u@\h$NORM \\w "
-	 if [[ -n "${git_status}" ]]; then
-		 ps1="${ps1}${git_status}\\n"
-	 fi
-	 ps1="${ps1}\\$ "
+    local ps1="\\[[\\t $cpu_util $mem_util] $BLU\\u@\h$NORM \\w "
+    if [[ -n "${git_status}" ]]; then
+	if (( ${#ps1} + ${#git_status} > $COLUMNS )); then
+	    ps1="${ps1}\\n${git_status}"
+	else
+	    ps1="${ps1}${git_status}"
+	fi
+    fi
+    ps1="${ps1}\\n\\$ "
 
     export PS1="${ps1}"
 }
