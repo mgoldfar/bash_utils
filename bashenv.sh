@@ -73,6 +73,13 @@ function _git_status {
     # Display nothing if we are not in a working tree
     if git rev-parse --is-inside-work-tree &> /dev/null; then
         local branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null)
+
+        # Truncate the branch name to 32 characters
+        local len=${BASHENV_GIT_MAX_BRANCH_LEN:-32}
+        if (( ${#branch} > $len )); then
+            branch="${branch:0:$len}..."
+        fi
+
 		  local staged_added=0
 		  local staged_modified=0
 		  local staged_deleted=0
