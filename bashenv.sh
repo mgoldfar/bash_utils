@@ -148,10 +148,21 @@ function _prompt {
     local cpu_util=$(_cpu_utilization)
     local mem_util=$(_mem_utilization)
     local git_status=$(_git_status)
+    local time=$(date +"%T")
+    local user=$(whoami)
+    local host=$(hostname -s)
+    local pwd=$(pwd)
+    pwd='~'${pwd#~}
 
-    local ps1="\\[[\\t $cpu_util $mem_util] $BLU\\u@\h$DEF $BOLD\\w$NORM "
+    # Note: We do not use the PS1 escape strings because we will not
+    # get an accurate string length
+    local ps1="\\[[$time $cpu_util $mem_util] "
+    ps1="${BLU}${user}@${host}${DEF} ${BOLD}${pwd}${NORM} "
+
     if [[ -n "${git_status}" ]]; then
-	if (( ${#ps1} + ${#git_status} > $COLUMNS )); then
+	local ps1_strip=$(_strip_control_sequence "${ps1}")
+	local git_status_strip=$(_strip_control_sequence "${git_status}")
+	if (( ${#ps1_strip} + ${#git_status_strip} > $COLUMNS )); then
 	    ps1="${ps1}\\n${git_status}"
 	else
 	    ps1="${ps1}${git_status}"
