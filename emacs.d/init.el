@@ -22,7 +22,8 @@
     (color-theme-deep-blue)))
 
 ;; Set major modes for additional extensions
-(add-to-list 'auto-mode-alist '("\\.cl\\'" . c-mode))
+(add-to-list 'auto-mode-alist '("\\.cl\\'" . c-mode)) ;; OpenCL kernels
+(add-to-list 'auto-mode-alist '("\\.proto\\'" . c++-mode)) ;; Protobuf
 
 ;; custom key mappings for common spell checking operations
 (global-set-key (kbd "<f6>") 'flyspell-mode)
