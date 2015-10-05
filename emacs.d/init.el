@@ -15,6 +15,10 @@
           (lambda ()
             (setq electric-indent-chars (delq ?: electric-indent-chars))))
 
+;; Column and line numbers
+(setq column-number-mode t)
+(setq line-number-mode t)
+
 ;; If color-theme is installed apply our favorite colors
 (when (require 'color-theme nil 'noerror)
   (when (display-graphic-p)
