@@ -42,9 +42,3 @@ BGLBLU=$'\e[104m'
 BGLMAG=$'\e[105m'
 BGLCYN=$'\e[106m'
 BGWTE=$'\e[107m'
-
-# Strips control sequences from the given string.
-# Note this is not a comprehensive function its mainly here to strip colors.
-function _strip_control_sequence {
-    echo "$@" | sed $'s/\e\[[0-9][0-9]\\?[0-9]\\?m//g'
-}
