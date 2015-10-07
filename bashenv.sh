@@ -163,7 +163,9 @@ function _prompt {
     local user=$(whoami)
     local host=$(hostname -s)
     local pwd=$(pwd)
-    pwd='~'${pwd#~}
+    if [[ $pwd == $HOME* ]]; then
+        pwd='~'${pwd#${HOME}}
+    fi
 
     # Note: We do not use the PS1 escape strings because we will not
     # get an accurate string length
