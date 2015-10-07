@@ -121,6 +121,9 @@ function _git_status {
                 "A") (( staged_added++ )) ;;
                 "D") (( staged_deleted++ )) ;;
             esac
+        # TODO: This command may take _a long time_ when the repo is very
+        # large or needs a GC. Consider replacing this command with some
+        # timeout based command so that the user can get on with work.
         done < <(git status --porcelain 2>/dev/null)
 
         local status=""
