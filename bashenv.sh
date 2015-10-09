@@ -173,7 +173,7 @@ function _prompt {
     # Note: We do not use the PS1 escape strings because we will not
     # get an accurate string length
     local ps1="\\[[$time $cpu_util $mem_util] "
-    ps1="${BLU}${user}@${host}${DEF} ${BOLD}${pwd}${NORM} "
+    ps1="${ps1}${BLU}${user}@${host}${DEF} ${BOLD}${pwd}${NORM} "
 
     if [[ -n "${git_status}" ]]; then
         local ps1_strip=$(_strip_control_sequence "${ps1}")
