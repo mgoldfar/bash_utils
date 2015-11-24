@@ -4,18 +4,18 @@ _src_dir=$(dirname ${BASH_SOURCE[0]})
 source "${_src_dir}/colors.sh"
 
 _uname=$(uname -s)
-_is_macosx=0
-_is_linux=0
+export IS_MACOSX=0
+export IS_LINUX=0
 if [[ $_uname = "Darwin" ]]; then
-    _is_macosx=1
+    export IS_MACOSX=1
 elif [[ $_uname = "Linux" ]]; then
-    _is_linux=1
+    export IS_LINUX=1
 fi
 
 # Strips control sequences from the given string.
 # Note this is not a comprehensive function its mainly here to strip colors.
 function _strip_control_sequence {
-    if (( _is_macosx == 1 )); then
+    if (( IS_MACOSX == 1 )); then
         # Mac OSX has the BSD version of sed, requires -E to enable "modern" regex.
         echo "$@" | sed -E $'s/\e\[[0-9][0-9]?[0-9]?m//g'
     else
@@ -25,9 +25,9 @@ function _strip_control_sequence {
 
 function _cpu_utilization {
     local ncpu=1
-    if (( _is_macosx == 1 )); then
+    if (( IS_MACOSX == 1 )); then
         ncpu=$(sysctl hw.ncpu | cut -d' ' -f2)
-    elif (( _is_linux == 1 )); then
+    elif (( IS_LINUX == 1 )); then
         ncpu=$(nproc)
     fi
 
@@ -49,7 +49,7 @@ function _cpu_utilization {
 
 function _mem_utilization {
     local mem_util="?"
-    if (( _is_macosx == 1 )); then
+    if (( IS_MACOSX == 1 )); then
         local total_hw_mem_bytes=$(sysctl hw.memsize | cut -d' ' -f2)
         local page_size=$(sysctl vm.pagesize | cut -d' ' -f2)
         local total_hw_pages=$((total_hw_mem_bytes / page_size))
@@ -58,7 +58,7 @@ function _mem_utilization {
         local num_page_reusable=$(sysctl vm.page_reusable_count | cut -d' ' -f2)
         mem_util=$(( (num_page_free+num_page_purgable+num_page_reusable)*100/total_hw_pages))
 
-    elif (( _is_linux == 1 )); then
+    elif (( IS_LINUX == 1 )); then
         local awksrc='/total[[:space:]]memory/{tot=$1} '
         awksrc=$awksrc'/free[[:space:]]memory/{free=$1} '
         awksrc=$awksrc'END {p=free/tot; printf "%d", 100*p; }'
@@ -189,3 +189,6 @@ function _prompt {
     export PS1="${ps1}"
 }
 export PROMPT_COMMAND=_prompt
+
+# Load up aliases
+source "${_src_dir}/aliases.sh"
