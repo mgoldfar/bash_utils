@@ -37,4 +37,9 @@
 ;; no verbose checking status (speeds things up)
 (setq flyspell-issue-message-flag nil)
 
+;; Up/Down arrown for emacs shell
+(when (require 'comint nil 'noerror)
+  (define-key comint-mode-map (kbd "<up>") 'comint-previous-input)
+  (define-key comint-mode-map (kbd "<down>") 'comint-next-input))
+
 (message "Finished loading init.el")
