@@ -195,7 +195,7 @@ function _prompt {
     fi
 
     # Finally add prompt designator
-    ps1="${ps1}\\$"
+    ps1="${ps1}\\$ "
 
     export PS1="${ps1}"
 }
