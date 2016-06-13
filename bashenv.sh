@@ -189,9 +189,9 @@ function _prompt {
 
     # Add last command exit estatus to prompt line
     if (( ${last_exit} == 0 )); then
-	ps1="${ps1}${GRN}(${last_exit})${DEF}"
+	     ps1="${ps1}\[${GRN}\](${last_exit})\[${DEF}\]"
     else
-	ps1="${ps1}${RED}(${last_exit})${DEF}"
+	     ps1="${ps1}\[${RED}\](${last_exit})\[${DEF}\]"
     fi
 
     # Finally add prompt designator
