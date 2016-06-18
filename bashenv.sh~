@@ -160,7 +160,6 @@ function _git_status {
 
 function _prompt {
     local last_exit=$?
-    local last_exit_fmt=$(printf "%3d" ${last_exit})
     local cpu_util=$(_cpu_utilization)
     local mem_util=$(_mem_utilization)
     local git_status=$(_git_status)
@@ -190,9 +189,9 @@ function _prompt {
 
     # Add last command exit estatus to prompt line
     if (( ${last_exit} == 0 )); then
-	     ps1="${ps1}\[${GRN}\](${last_exit_fmt})\[${DEF}\]"
+	     ps1="${ps1}\[${GRN}\](${last_exit})\[${DEF}\]"
     else
-	     ps1="${ps1}\[${RED}\](${last_exit_fmt})\[${DEF}\]"
+	     ps1="${ps1}\[${RED}\](${last_exit})\[${DEF}\]"
     fi
 
     # Finally add prompt designator
