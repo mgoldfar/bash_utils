@@ -1,0 +1,5 @@
+# Ignore emacs temporary files from editors
+*~
+[#]*[#]
+*.swp
+*.swo
