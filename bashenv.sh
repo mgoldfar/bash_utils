@@ -1,5 +1,5 @@
 # TODO: This will not work with links
-_src_dir=$(dirname ${BASH_SOURCE[0]})
+_src_dir=$(dirname ${BASH_SOURCE[0]})/bashenv
 
 _uname=$(uname -s)
 export IS_MACOSX=0
