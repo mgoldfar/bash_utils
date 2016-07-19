@@ -17,6 +17,7 @@ source "${_src_dir}/util.sh"
 source "${_src_dir}/colors.sh"
 source "${_src_dir}/toolcheck.sh"
 source "${_src_dir}/prompt.sh"
+source "${_src_dir}/ssh.sh"
 source "${_src_dir}/aliases.sh"
 
 # On MacOS X remap erase key to ^H to get consisten
@@ -24,3 +25,4 @@ source "${_src_dir}/aliases.sh"
 if (( IS_MACOSX == 1 )); then
     stty erase ^H
 fi
+
