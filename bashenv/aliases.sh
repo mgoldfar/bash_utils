@@ -16,3 +16,8 @@ alias ll='ls -alh'
 # grep
 alias grep='grep --color'
 alias egrep='egrep --color'
+
+# IPython to load numpy and matplotlib
+if (( HAVE_ipython == 1 )); then
+    alias ipython='ipython --pylab'
+fi
