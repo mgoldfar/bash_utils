@@ -185,3 +185,5 @@ function _prompt {
 
     export PS1="${ps1}"
 }
+
+export PROMPT_COMMAND=_prompt

@@ -17,8 +17,10 @@ source "${_src_dir}/util.sh"
 source "${_src_dir}/colors.sh"
 source "${_src_dir}/toolcheck.sh"
 source "${_src_dir}/prompt.sh"
-
-export PROMPT_COMMAND=_prompt
-
-# Load up aliases
 source "${_src_dir}/aliases.sh"
+
+# On MacOS X remap erase key to ^H to get consisten
+# delete key behavior in emacs
+if (( IS_MACOSX == 1 )); then
+    stty erase ^H
+fi
