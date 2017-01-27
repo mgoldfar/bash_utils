@@ -157,6 +157,8 @@ function _prompt {
         pwd='~'${pwd#${HOME}}
     fi
 
+    local cols=$(tput cols)
+
     # Note: We do not use the PS1 escape strings because we will not
     # get an accurate string length
     local ps1="\\[[$time $cpu_util $mem_util] "
@@ -165,7 +167,7 @@ function _prompt {
     if [[ -n "${git_status}" ]]; then
         local ps1_strip=$(_strip_control_sequence "${ps1}")
         local git_status_strip=$(_strip_control_sequence "${git_status}")
-        if (( ${#ps1_strip} + ${#git_status_strip} > $COLUMNS )); then
+        if (( ${#ps1_strip} + ${#git_status_strip} > $cols )); then
             ps1="${ps1}\\n${git_status}"
         else
             ps1="${ps1}${git_status}"
