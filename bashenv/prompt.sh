@@ -1,6 +1,11 @@
 
 function _git_status {
 
+    # If git promp disabled then don't do anything
+    if (( DISABLE_git_status == 1 )); then
+        return;
+    fi
+
     # If not git is installed then print in error
     if (( HAVE_git == 0 )); then
         if [[ -d "./.git" ]]; then
