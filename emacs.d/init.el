@@ -42,4 +42,10 @@
   (define-key comint-mode-map (kbd "<up>") 'comint-previous-input)
   (define-key comint-mode-map (kbd "<down>") 'comint-next-input))
 
+;; Less spastic scrolling 
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time    
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;; keyboard scroll one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+
 (message "Finished loading init.el")
