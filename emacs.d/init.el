@@ -1,5 +1,9 @@
 (message "Loading my custom init.el")
 
+;; Load package if >= v24
+(when (>= emacs-major-version 24)
+  (load "~/environment/emacs.d/init_packages.el"))
+
 ;; Disable that pesky startup screen
 (custom-set-variables
  '(inhibit-startup-screen t))
@@ -25,7 +29,7 @@
     (color-theme-initialize)
     (color-theme-deep-blue)))
 
-;; Set major modes for additional extensions
+;; Set major modes for additional extensiurens
 (add-to-list 'auto-mode-alist '("\\.cl\\'" . c-mode)) ;; OpenCL kernels
 (add-to-list 'auto-mode-alist '("\\.proto\\'" . c++-mode)) ;; Protobuf
 
