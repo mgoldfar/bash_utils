@@ -2,10 +2,9 @@
 
 (require 'package)
 
-(add-to-list
- 'package-archives
- '("melpa" . "https://melpa.org/packages/")
- t)
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("marmalade" . "https://marmalade-repo.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")))
 
 (package-initialize)
 
@@ -31,6 +30,7 @@ Return a list of installed packages or nil for every skipped package."
 (ensure-package-installed
  'cl-lib
  'neotree
+ 'minimap
 )
 
 (require 'neotree)
