@@ -23,12 +23,6 @@
 (setq column-number-mode t)
 (setq line-number-mode t)
 
-;; If color-theme is installed apply our favorite colors
-(when (require 'color-theme nil 'noerror)
-  (when (display-graphic-p)
-    (color-theme-initialize)
-    (color-theme-deep-blue)))
-
 ;; Set major modes for additional extensiurens
 (add-to-list 'auto-mode-alist '("\\.cl\\'" . c-mode)) ;; OpenCL kernels
 (add-to-list 'auto-mode-alist '("\\.proto\\'" . c++-mode)) ;; Protobuf

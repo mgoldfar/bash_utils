@@ -31,9 +31,13 @@ Return a list of installed packages or nil for every skipped package."
  'cl-lib
  'neotree
  'minimap
+ 'color-theme-modern
 )
 
 (require 'neotree)
 (global-set-key [f5] 'neotree-toggle)
+
+(load-theme 'deep-blue t t)
+(enable-theme 'deep-blue)
 
 (message "Finished my packages.")
